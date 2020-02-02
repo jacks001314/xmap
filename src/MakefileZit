@@ -1,0 +1,59 @@
+##########################################################
+#Author(A) shajianfeng
+##########################################################
+include ../make.include
+
+CFLAGS  = ${BUILD_CFLAGS}  -g -rdynamic  -pthread 
+CFLAGS += -I../lib/common 
+CFLAGS += -I../lib/thread
+CFLAGS += -I../lib/shm
+CFLAGS += -I./probe
+CFLAGS += -I./interface
+CFLAGS += -I.
+
+LDFLAGS  = ${BUILD_LDFLAGS} -lpthread -lgmp -lpcap
+
+common_package = ../lib/common/*.o
+thread_package = ../lib/thread/*.o
+shm_package = ../lib/shm/*.o
+
+xiterate_package = xiterate
+
+xiterate_SOURCES =xm_aesrand.c \
+			   xm_wblist.c \
+			   xm_cyclic.c \
+			   xm_shard.c \
+			   xm_store.c \
+			   xm_validate.c \
+			   xitopt.c \
+			   xiterate.c
+
+xiterate_OBJECTS =$(patsubst %.c,%.o,$(xiterate_SOURCES))
+xiterate_DEPENDS =$(patsubst %.c,%.d,$(xiterate_SOURCES))
+xiterate_ASMFILE =$(patsubst %.c,%.s,$(xiterate_SOURCES))
+
+quiet_cmd_xiterate = LINK   $@ 
+	cmd_xiterate = ${CC} ${CFLAGS} -o $@ $(xiterate_OBJECTS)  \
+				 $(common_package)  $(thread_package) $(shm_package) \
+				   $(LDFLAGS)
+
+.PHONY: all clean
+
+all: $(xiterate_package)
+
+$(xiterate_package): $(xiterate_OBJECTS) 
+	$(call cmd,xiterate)
+-include $(xiterate_DEPENDS)
+
+$(common_package):
+	$(call,make)
+
+$(thread_package):
+	$(call,make)
+
+$(shm_package):
+	$(call,make)
+
+clean:
+	@rm -rf $(xiterate_OBJECTS) $(xiterate_DEPENDS) $(xiterate_ASMFILE) $(xiterate_package)
+

@@ -1,0 +1,46 @@
+include ../make.include
+CFLAGS  = ${BUILD_CFLAGS}  -O0 -rdynamic -D_GNU_SOURCE -pthread
+CFLAGS += -I../lib/common -I../lib/thread -I ../src/interface/
+
+LDFLAGS  = ${BUILD_LDFLAGS} -lpthread -lpfring -lpcap
+
+
+common_package = ../lib/common/*.o
+cpool_package = ../lib/thread/*.o
+pcore_package = ../src/interface/*.o
+
+pcap_package= test_pcap
+
+pcap_SOURCES = test_pcap.c
+
+pcap_OBJECTS =$(patsubst %.c,%.o,$(pcap_SOURCES))
+pcap_DEPENDS =$(patsubst %.c,%.d,$(pcap_SOURCES))
+pcap_ASMFILE =$(patsubst %.c,%.s,$(pcap_SOURCES))
+
+quiet_cmd_pcap = LINK   $@ 
+	cmd_pcap = ${CC} ${CFLAGS} -o $@ $(pcap_OBJECTS)  \
+				   $(common_package) $(cpool_package) $(pcore_package) \
+				   $(LDFLAGS)
+
+.PHONY: all clean
+
+all: $(pcap_package)
+
+$(pcap_package): $(pcap_OBJECTS) 
+	$(call cmd,pcap)
+-include $(pcap_DEPENDS)
+
+$(common_package):
+	$(call,make)
+
+$(pcore_package):
+	$(call,make)
+
+$(thread_package):
+	$(call,make)
+
+
+clean:
+	@rm -rf $(pcap_OBJECTS) $(pcap_DEPENDS) $(pcap_ASMFILE) $(pcap_package)
+
+

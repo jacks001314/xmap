@@ -1,0 +1,48 @@
+include ../../make.include
+CFLAGS  = ${BUILD_CFLAGS}  -O0 -rdynamic -D_GNU_SOURCE
+CFLAGS += -I../common -I.
+
+SHMInfoDump_package= SHMInfoDump
+
+SHMInfoDump_SOURCES = xm_shm_format.c \
+					  xm_shm_mmap.c \
+					  xm_shm_interface.c \
+					  xm_shm_entry_record.c \
+					  xm_shm_memory.c \
+					  ../common/xm_util.c \
+					  ../common/xm_strtime.c \
+					  ../common/xm_cpystrn.c \
+					  ../common/xm_mpool.c \
+					  ../common/xm_string.c \
+					  ../common/xm_log.c \
+					  ../common/xm_errno.c \
+					  ../common/xm_time.c \
+					  ../common/xm_file_fullrw.c \
+					  ../common/xm_file_open.c \
+					  ../common/xm_file_readwrite.c \
+					  ../common/xm_fileacc.c \
+					  ../common/xm_printf.c \
+				  SHMInfoDump.c 
+
+SHMInfoDump_OBJECTS =$(patsubst %.c,%.o,$(SHMInfoDump_SOURCES))
+SHMInfoDump_DEPENDS =$(patsubst %.c,%.d,$(SHMInfoDump_SOURCES))
+SHMInfoDump_ASMFILE =$(patsubst %.c,%.s,$(SHMInfoDump_SOURCES))
+
+quiet_cmd_dpdk = LINK   $@ 
+	cmd_SHMInfoDump = ${CC} ${CFLAGS} -o $@ $(SHMInfoDump_OBJECTS)  \
+					$(common_package) \
+					$(LDFLAGS)
+
+.PHONY: all clean
+
+all: $(SHMInfoDump_package)
+
+$(SHMInfoDump_package): $(SHMInfoDump_OBJECTS) 
+	$(call cmd,SHMInfoDump)
+-include $(SHMInfoDump_DEPENDS)
+
+$(common_package):
+	$(call,make)
+
+clean:
+	@rm -rf $(SHMInfoDump_OBJECTS) $(SHMInfoDump_DEPENDS) $(SHMInfoDump_ASMFILE) $(SHMInfoDump_package)
