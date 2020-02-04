@@ -3,7 +3,6 @@ package com.xmap.api.utils;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Created by shajf on 2016/5/18.
  */
 public class KeepAliveThread {
 

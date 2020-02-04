@@ -10,7 +10,6 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  jacksha (shajf), csp001314@163.com
  *   Organization:  
  *
  * =====================================================================================

@@ -2,7 +2,6 @@
  *
  *      Filename: xm_jni_util.h
  *
- *        Author: shajf,csp001314@gmail.com
  *   Description: ---
  *        Create: 2018-06-08 12:23:21
  * Last Modified: 2018-06-08 12:23:21

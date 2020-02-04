@@ -2,7 +2,6 @@
  *
  *      Filename: xm_jni_list.h
  *
- *        Author: shajf,csp001314@gmail.com
  *   Description: ---
  *        Create: 2018-09-06 16:59:51
  * Last Modified: 2018-09-06 16:59:51
